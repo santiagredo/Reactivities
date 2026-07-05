@@ -1,0 +1,13 @@
+using Application.DTOs;
+using Application.Validators;
+using FluentValidation;
+
+namespace Application.Activities.Validators;
+
+public class EditActivityValidator : BaseActivityValidator<EditActivity.Command, EditActivityDto>
+{
+    public EditActivityValidator() : base(x => x.ActivityDto)
+    {
+        RuleFor(x => x.ActivityDto.Id).NotEmpty().WithMessage("Id is required");
+    }
+}
