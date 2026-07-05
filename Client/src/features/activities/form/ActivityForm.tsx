@@ -1,13 +1,12 @@
 import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import { useActivities } from "../../../lib/hooks/useActivities";
+import { useNavigate, useParams } from "react-router";
 
-type Props = {
-    activity?: Activity;
-    closeForm: () => void;
-};
-
-export default function ActivityForm({ activity, closeForm }: Props) {
-    const { createActivity, updateActivity } = useActivities();
+export default function ActivityForm() {
+    const { id } = useParams();
+    const { createActivity, updateActivity, activity, isLoadingActivity } =
+        useActivities(id);
+    const navigate = useNavigate();
 
     const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -25,17 +24,22 @@ export default function ActivityForm({ activity, closeForm }: Props) {
 
             await updateActivity.mutateAsync(activity);
 
-            closeForm();
+            navigate(`/activities/${activity.id}`);
         } else {
-            await createActivity.mutateAsync(data as unknown as Activity);
-            closeForm();
+            await createActivity.mutate(data as unknown as Activity, {
+                onSuccess: (id) => {
+                    navigate(`/activities/${id}`);
+                },
+            });
         }
     };
+
+    if (isLoadingActivity) return <Typography>Loading...</Typography>;
 
     return (
         <Paper sx={{ borderRadius: 3, padding: 3 }}>
             <Typography variant="h5" gutterBottom color="primary">
-                Create Activity
+                {activity ? "Edit Activity" : "Create Activity"}
             </Typography>
             <Box
                 component="form"
@@ -82,7 +86,7 @@ export default function ActivityForm({ activity, closeForm }: Props) {
                     defaultValue={activity?.venue}
                 />
                 <Box sx={{ display: "flex", justifyContent: "end", gap: 3 }}>
-                    <Button onClick={closeForm} color="inherit">
+                    <Button onClick={() => {}} color="inherit">
                         Cancel
                     </Button>
                     <Button
