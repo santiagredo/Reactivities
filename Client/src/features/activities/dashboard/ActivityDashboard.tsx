@@ -4,9 +4,11 @@ import { useActivities } from "../../../lib/hooks/useActivities";
 import ActivityFilters from "./ActivityFilters";
 
 export default function ActivityDashboard() {
-    const { activities, isPending } = useActivities();
+    const { activities, isLoading } = useActivities();
 
-    if (!activities || isPending) return <Typography>Loading...</Typography>;
+    if (isLoading) return <Typography>Loading...</Typography>;
+
+    if (!activities) return <Typography>No activities found</Typography>;
 
     return (
         <Grid container spacing={3}>
