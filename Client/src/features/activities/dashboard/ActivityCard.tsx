@@ -12,17 +12,19 @@ import {
 } from "@mui/material";
 import { Link } from "react-router";
 import { formatDate } from "../../../lib/util/util";
+import AvatarPopover from "../../../app/shared/components/AvatarPopover";
 
 type Props = {
     activity: Activity;
 };
 
 export default function ActivityCard({ activity }: Props) {
-    const isHost = false;
-    const isGoing = false;
-    const label = isHost ? "You are hosting" : "You are going";
-    const isCanceled = false;
-    const color = isHost ? "secondary" : isGoing ? "warning" : "default";
+    const label = activity.isHost ? "You are hosting" : "You are going";
+    const color = activity.isHost
+        ? "secondary"
+        : activity.isGoing
+          ? "warning"
+          : "default";
 
     return (
         <Card elevation={3} sx={{ borderRadius: 3 }}>
@@ -39,7 +41,10 @@ export default function ActivityCard({ activity }: Props) {
                     slotProps={{ title: { variant: "h6" } }}
                     subheader={
                         <>
-                            Hosted by <Link to={`/profiles/bob`}>Bob</Link>
+                            Hosted by{" "}
+                            <Link to={`/profiles/${activity.hostId}`}>
+                                {activity.hostDisplayName}
+                            </Link>
                         </>
                     }
                 />
@@ -51,15 +56,16 @@ export default function ActivityCard({ activity }: Props) {
                         mr: 2,
                     }}
                 >
-                    {(isHost || isGoing) && (
+                    {(activity.isHost || activity.isGoing) && (
                         <Chip
+                            variant="outlined"
                             label={label}
                             color={color}
                             sx={{ borderRadius: 2 }}
                         />
                     )}
 
-                    {isCanceled && (
+                    {activity.isCanceled && (
                         <Chip
                             label="Canceled"
                             color="error"
@@ -104,7 +110,9 @@ export default function ActivityCard({ activity }: Props) {
                     pl: 3,
                 }}
             >
-                Attendees go here
+                {activity.attendees.map((att) => (
+                    <AvatarPopover profile={att} key={att.id} />
+                ))}
             </Box>
 
             <CardContent sx={{ pb: 2 }}>
