@@ -15,8 +15,6 @@ type Props = {
 };
 
 export default function ActivityDetailsSidebar({ activity }: Props) {
-    const following = true;
-
     return (
         <>
             <Paper
@@ -34,7 +32,11 @@ export default function ActivityDetailsSidebar({ activity }: Props) {
             </Paper>
             <Paper sx={{ padding: 2 }}>
                 {activity.attendees.map((attendee) => (
-                    <Grid key={attendee.id} container sx={{ alignItems: "center" }}>
+                    <Grid
+                        key={attendee.id}
+                        container
+                        sx={{ alignItems: "center" }}
+                    >
                         <Grid size={8}>
                             <List
                                 sx={{
@@ -63,7 +65,7 @@ export default function ActivityDetailsSidebar({ activity }: Props) {
                                             {attendee.displayName}
                                         </Typography>
 
-                                        {following && (
+                                        {attendee.following && (
                                             <Typography
                                                 variant="body2"
                                                 color="orange"

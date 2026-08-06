@@ -9,13 +9,14 @@ import {
     Stack,
     Typography,
 } from "@mui/material";
+import { useParams } from "react-router";
+import { useProfile } from "../../lib/hooks/useProfile";
 
-type Props = {
-    profile: Profile;
-};
+export default function ProfileHeader() {
+    const { id } = useParams();
+    const { isCurrentUser, profile, updateFollowing } = useProfile(id);
 
-export default function ProfileHeader({ profile }: Props) {
-    const isFollowing = true;
+    if (!profile) return null;
 
     return (
         <Paper elevation={3} sx={{ padding: 4, borderRadius: 3 }}>
@@ -43,7 +44,7 @@ export default function ProfileHeader({ profile }: Props) {
                                 {profile.displayName}
                             </Typography>
 
-                            {isFollowing && (
+                            {profile.following && (
                                 <Chip
                                     variant="outlined"
                                     color="secondary"
@@ -67,25 +68,37 @@ export default function ProfileHeader({ profile }: Props) {
                             <Box sx={{ textAlign: "center" }}>
                                 <Typography variant="h6">Followers</Typography>
 
-                                <Typography variant="h3">5</Typography>
+                                <Typography variant="h3">
+                                    {profile.followersCount}
+                                </Typography>
                             </Box>
 
                             <Box sx={{ textAlign: "center" }}>
                                 <Typography variant="h6">Following</Typography>
 
-                                <Typography variant="h3">42</Typography>
+                                <Typography variant="h3">
+                                    {profile.followingCount}
+                                </Typography>
                             </Box>
                         </Box>
 
-                        <Divider sx={{ width: "100%" }} />
+                        {!isCurrentUser && (
+                            <>
+                                <Divider sx={{ width: "100%" }} />
 
-                        <Button
-                            fullWidth
-                            variant="outlined"
-                            color={isFollowing ? "error" : "success"}
-                        >
-                            {isFollowing ? "Unfollow" : "follow"}
-                        </Button>
+                                <Button
+                                    onClick={() => updateFollowing.mutate()}
+                                    disabled={updateFollowing.isPending}
+                                    fullWidth
+                                    variant="outlined"
+                                    color={
+                                        profile.following ? "error" : "success"
+                                    }
+                                >
+                                    {profile.following ? "Unfollow" : "follow"}
+                                </Button>
+                            </>
+                        )}
                     </Stack>
                 </Grid>
             </Grid>
