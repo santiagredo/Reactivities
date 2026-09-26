@@ -27,7 +27,7 @@ export default function LoginForm() {
 
     const handleResendEmail = async () => {
         try {
-            await resendConfirmationEmail.mutateAsync({email});
+            await resendConfirmationEmail.mutateAsync({ email });
             setNotVerified(false);
         } catch (error) {
             console.log(error);
@@ -112,17 +112,31 @@ export default function LoginForm() {
                     </Button>
                 </Box>
             ) : (
-                <Typography sx={{ textAlign: "center" }}>
-                    Don't have an account?
-                    <Typography
-                        component={Link}
-                        to="/register"
-                        color="primary"
-                        sx={{ ml: 1 }}
-                    >
-                        Sign up
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 3,
+                    }}
+                >
+                    <Typography>
+                        {"Forgot password? Click "}
+                        <Link to={"/forgot-password"}>Here</Link>
                     </Typography>
-                </Typography>
+
+                    <Typography sx={{ textAlign: "center" }}>
+                        Don't have an account?
+                        <Typography
+                            component={Link}
+                            to="/register"
+                            color="primary"
+                            sx={{ ml: 1 }}
+                        >
+                            Sign up
+                        </Typography>
+                    </Typography>
+                </Box>
             )}
         </Paper>
     );
